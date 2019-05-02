@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>  
+        <template id="assets_backend" name="bol_ept assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/bol_ept/static/src/css/base.css"/>
+                <link rel="stylesheet" href="/bol_ept/static/src/less/bol_dashboard.less"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>

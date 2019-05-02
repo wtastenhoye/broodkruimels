@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>           
+    	<record id="view_bol_process_import_export_from_more_ept" model="ir.ui.view">
+            <field name="name">Process Import/Export</field>
+            <field name="model">bol.process.import.export</field>
+            <field name="arch" type="xml">
+                <form string="Import/Export" style="height: 200px">
+                	<group invisible="context.get('process','') not in ['prepare_product_for_export']">
+                		<field name="instance_ids" widget="many2many_tags"/>
+                		<field name="fullfillment_by" required="1" style="width:100px"/>
+                		<p colspan="2" class="alert alert-warning"><b>Caution:</b> Products without Barcode (EAN) will not be prepare for export in Bol.</p>
+                	</group>
+                	<group invisible="context.get('process','') not in ['sync_selective_products']">
+                		<field name="sync_price_with_product"/>
+					</group>
+					<group invisible="context.get('process','') not in ['export_selective_products']">
+                		<p colspan="2" class="alert alert-warning"><b>Caution:</b> Update product will update <b>Price</b> and <b>Stock</b> along with other Product Information from Odoo to Bol.com.</p>
+					</group>
+					<group invisible="context.get('process','') not in ['delete_products']">
+                		<p colspan="2" class="alert alert-danger"><b>Are you sure you want to delete selected product in Bol.com?</b></p>
+					</group>
+                	<footer>
+                		<button name="delete_products" invisible="context.get('process','') != 'delete_products'" string="Delete Products" type="object" class="oe_highlight"/>
+                		<button name="export_products" invisible="context.get('process','') != 'export_selective_products'" string="Export/Update Products" type="object" class="oe_highlight"/>
+                		<button name="retrive_product_status" invisible="context.get('process','') != 'retrive_product_status'" string="Get Products Status" type="object" class="oe_highlight"/>
+                		<button name="prepare_product_for_export_in_bol" invisible="context.get('process','') != 'prepare_product_for_export'" string="Prepare Products" type="object" class="oe_highlight"/>
+                		<button name="sync_selective_products" invisible="context.get('process','') != 'sync_selective_products'" string="Sync Products" type="object" class="oe_highlight"/>                      
+                        <button string="Cancel" class="oe_highlight" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>       
+        
+       	<act_window name="Prepare Product For Export in Bol" 
+       	res_model="bol.process.import.export"
+		src_model="product.template" view_mode="form" view_type="form"
+		target="new" multi="True" key2="client_action_multi"
+		id="action_wizard_bol_prepare_product_tmpl_for_export"
+		view_id="view_bol_process_import_export_from_more_ept"			
+		context="{'process':'prepare_product_for_export','product_template':True}"/>
+		
+		<act_window name="Prepare Product For Export in Bol" 
+       	res_model="bol.process.import.export"
+		src_model="product.product" view_mode="form" view_type="form"
+		target="new" multi="True" key2="client_action_multi"
+		id="action_wizard_bol_prepare_product_for_export"
+		view_id="view_bol_process_import_export_from_more_ept"			
+		context="{'process':'prepare_product_for_export','product_product':True}"/>
+				
+	    <act_window name="Sync Products" res_model="bol.process.import.export"
+		src_model="bol.product.ept" view_mode="form" view_type="form"
+		target="new" multi="True" key2="client_action_multi"
+		id="action_wizard_bol_sync_selective_products"
+		view_id="view_bol_process_import_export_from_more_ept"			
+		context="{'process':'sync_selective_products'}"/>
+		
+		<act_window name="Export/Update Products" res_model="bol.process.import.export"
+		src_model="bol.product.ept" view_mode="form" view_type="form"
+		target="new" multi="True" key2="client_action_multi"
+		id="action_wizard_bol_export_selective_products"
+		view_id="view_bol_process_import_export_from_more_ept"			
+		context="{'process':'export_selective_products'}"/>
+		
+		<act_window name="Get Products Status" res_model="bol.process.import.export"
+		src_model="bol.product.ept" view_mode="form" view_type="form"
+		target="new" multi="True" key2="client_action_multi"
+		id="action_wizard_bol_sync_products_status"
+		view_id="view_bol_process_import_export_from_more_ept"			
+		context="{'process':'retrive_product_status'}"/>
+		
+		<act_window name="Delete Products in bol.com" res_model="bol.process.import.export"
+		src_model="bol.product.ept" view_mode="form" view_type="form"
+		target="new" multi="True" key2="client_action_multi"
+		id="action_wizard_bol_delete_products_ept"
+		view_id="view_bol_process_import_export_from_more_ept"			
+		context="{'process':'delete_products'}"/>
+		
+		<record id="view_bol_process_import_export_ept" model="ir.ui.view">
+            <field name="name">Process Import/Export</field>
+            <field name="model">bol.process.import.export</field>
+            <field name="priority">11</field>
+            <field name="arch" type="xml">
+                <form string="Import/Export">
+                	<sheet>
+	                	<group>						                	
+		                	<field name='instance_ids' domain="[('state','=','confirmed')]" widget="many2many_tags" options="{'no_create':True,'no_create_edit': True}"/>                	
+	                	</group>
+	                	<notebook>
+	                		<page string="Bol => ERP">
+								<group>
+									<group name="import_so" string="Sales Orders">
+										<field name="is_fbr_import_orders"/>
+										<field name="is_fbb_import_orders"/>
+										<field name="is_import_return_request"/>
+									</group>		                			
+									<group name="import_product" string="Products">
+										<field name="sync_product_from_bol"/>
+										<field name="product_ean" attrs="{'invisible':[('sync_product_from_bol','=',False)],'required':[('sync_product_from_bol','=',True)]}"/>
+									</group>
+									<group name="import_shipment" string="Shipments">
+										<field name="is_import_shipment_details"/>
+										<field name="is_retrive_shipment_status"/>
+									</group>
+									<group name="inbound_shipment" string="Fullfillment By Bol">
+										<field name="is_import_trasport"/>
+										<field name="is_import_invetory"/>
+									</group>
+								</group>
+	                		</page>
+	                		<page string="ERP => Bol">
+	                			<group>
+		                			<group name="op_product" string="Product Operations">
+		                				<field name="is_export_products"/>
+		                				<p colspan="2" class="alert alert-warning"><b>Caution:</b> Update product will update <b>Price</b> and <b>Stock</b> along with other Information from Odoo to Bol.com.</p>
+		                			</group>
+									<group name="op_order" string="Shipment Status">
+		                				<field name="is_update_order_status"/>                				
+	                				</group>
+	                			</group>
+	                		</page>
+	                	</notebook>	
+						<footer>
+							<button string="Execute" class="oe_highlight" type="object" name="execute"/>
+	                        <button string="Cancel" class="oe_highlight" special="cancel" />
+	                    </footer>
+                    </sheet>
+               </form>
+            </field>
+        </record>
+        
+		<record id="action_wizard_bol_instance_processes_ept" model="ir.actions.act_window">
+         	<field name="name">Bol Operations</field>
+         	<field name="type">ir.actions.act_window</field>
+         	<field name="res_model">bol.process.import.export</field>
+         	<field name="view_type">form</field>
+         	<field name="view_mode">form</field>
+         	<field name="context">{'default_instance_id':active_id}</field>
+         	<field name="target">new</field>
+         </record>        		
+		
+		<record id="action_wizard_bol_processes_ept" model="ir.actions.act_window">
+         	<field name="name">Bol Operations</field>
+         	<field name="type">ir.actions.act_window</field>
+         	<field name="res_model">bol.process.import.export</field>
+         	<field name="view_type">form</field>
+         	<field name="view_mode">form</field>
+         	<field name="target">new</field>
+         </record>
+		
+		
+        <menuitem id="menu_bol_processes_ept" parent="bol_ept.bol_main_menu" name="Processes" groups="bol_ept.group_bol_ept"  sequence="15"/>
+
+        <menuitem id="menu_bol_import_export_process_ept" name="Bol Operations"
+         parent="menu_bol_processes_ept" action="action_wizard_bol_processes_ept" sequence="20"/>		
+		
+		
+    </data>
+</openerp>

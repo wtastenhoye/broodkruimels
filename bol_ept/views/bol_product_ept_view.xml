@@ -1,0 +1,295 @@
+<?xml version="1.0" ?>
+<odoo>
+	<data noupdate="1">
+        <record id="seq_bol_product_sync_job" model="ir.sequence">
+            <field name="name">Bol Product Sync Job Sequence</field>
+            <field name="code">bol.product.sync.process.job</field>
+            <field name="padding">5</field>
+            <field name="prefix">PRSYC</field>
+            <field name="company_id" eval="False"/>
+        </record>
+   </data>
+  <data>	
+	<record id="bol_product_tree_view_ept" model="ir.ui.view">
+	    <field name="name">Bol Product Tree View</field>
+	    <field name="model">bol.product.ept</field>
+		<field name="arch" type="xml">
+            <tree string="Bol Product Tree View" create="false">            
+            	<field name="name"/>
+	            <field name="bol_instance_id"></field>
+	            <field name="product_id"></field>
+	            <field name="reference_code"></field>
+	            <field name="exported_in_bol"/>
+			</tree>
+		</field>
+	</record>
+	
+	<record id="bol_product_sync_tree_view_ept" model="ir.ui.view">
+	    <field name="name">Bol Product Tree View</field>
+	    <field name="model">bol.product.sync.ept</field>
+		<field name="arch" type="xml">
+            <tree string="Bol Product Sync Tree View">            
+            	<field name="name"/>
+	            <field name="bol_instance_id"></field>
+	            <field name="requested_date"></field>
+	            <field name="state"></field>
+	            <field name="attachment_id" invisible="1"/>
+	        </tree>
+		</field>
+	</record>
+	
+	<record model="ir.ui.view" id="bol_product_search_view_ept">
+		<field name="name">Bol Product Search View</field>
+		<field name="model">bol.product.ept</field>
+		<field name="type">search</field>
+		<field name="arch" type="xml">
+			<search string="Bol Products">
+                <field name="name" string="Product" filter_domain="[('name','ilike',self)]"/>
+                <field name="product_id"/>
+                <field name="reference_code"/>
+                <field name="exported_in_bol"/>
+                <filter string="Exported In Bol" icon="terp-accessories-archiver" domain="[('exported_in_bol','=',True)]"/>
+                <filter string="Not Exported In Bol" icon="terp-accessories-archiver" domain="[('exported_in_bol','=',False)]"/>
+				<group expand="0" string="Group By">
+	                <filter string="Instance" domain="[]" context="{'group_by':'bol_instance_id'}"/>
+	            </group>
+			</search>
+		</field>
+	</record>
+	
+	<record model="ir.ui.view" id="bol_product_sync_search_view_ept">
+		<field name="name">Bol Product Search View</field>
+		<field name="model">bol.product.sync.ept</field>
+		<field name="type">search</field>
+		<field name="arch" type="xml">
+			<search string="Bol Products">
+                <field name="name" string="Name" filter_domain="[('name','ilike',self)]"/>
+                <group expand="0" string="Group By">
+	                <filter string="Instance" domain="[]" icon="terp-accessories-archiver" context="{'group_by':'bol_instance_id'}"/>
+	                <filter string="Process Status" domain="[]" icon="terp-accessories-archiver" context="{'group_by':'state'}"/>
+	            </group>
+			</search>
+		</field>
+	</record>
+
+	<record id="bol_product_form_view_ept" model="ir.ui.view">
+		<field name="name">Bol Product Form View</field>
+		<field name="model">bol.product.ept</field>
+		<field name="arch" type="xml">
+			<form string="Bol Product Form View" create="false">
+				<sheet>
+                   <div class="oe_title" style="width: 390px;">
+                       <label class="oe_edit_only" for="name" string="Title"/>
+                       <h1><field name="name" class="oe_inline" required="1"/></h1>
+                   </div>
+                <notebook>
+					<page string="Bol Info">
+						<group>
+							<group>
+								<field name="bol_instance_id" domain="[('state','=','confirmed')]" attrs="{'readonly': [('exported_in_bol','=',True)]}"/>
+								<field name="product_id" required="1" readonly="1"/>
+								<field name="ean"></field>
+								<field name="bol_bsku"></field>								
+							</group>	
+							<group>
+								<field name="condition" required="1"></field>
+								<field name="delivery_code" required="1"></field>
+								<field name="fullfillment_method" required="1"></field>
+							</group>
+							<group>
+								<field name="publish"/>
+								<field name="reference_code"/>
+								<field name="exported_in_bol" readonly="1"/>
+								<field name="producturl" widget="url"/>
+							</group>
+							<group>
+								<field name="created_at" readonly="1"/>
+								<field name="updated_at" readonly="1"/>		
+								<field name="fix_stock_type"/>
+								<field name="fix_stock_value"/>														
+							</group>
+						</group>
+						<group string="Product Status">
+							<field name="published" readonly="1"/>
+							<field name="reason_code" readonly="1"></field>
+							<field name="reason_message" readonly="1"></field>
+						</group>
+						<group string="Description">
+							<field name="product_description" nolabel="1"/>
+						</group>
+					</page>
+				</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	
+	<record id="bol_product_sync_form_view_ept" model="ir.ui.view">
+		<field name="name">Bol Product Sync Form View</field>
+		<field name="model">bol.product.sync.ept</field>
+		<field name="arch" type="xml">
+			<form string="Bol Sync Product Form View" create="false">
+				<header>
+				<button name="request_file" class="oe_highlight" type="object" string="Request Product File" states='draft'></button>
+				<button name="get_file" class="oe_highlight" type="object" string="Retrive Product File" states="requested"></button>
+				<button name="process_file" class="oe_highlight" type="object" string="Process Product File" states="downloaded"></button>
+				<button name="list_of_logs" string="Mismatch Details"  class="oe_highlight" help="Click Here To Check Logs" type="object"/>
+				<field name="state" widget="statusbar"/>
+				</header>
+				<sheet>
+                	<group>
+                		<group>
+                			<field name="name" readonly="1"></field>
+                			<field name="bol_instance_id" required="1" widget="selection" attrs="{'readonly':[('name','not in',['New',False])]}"></field>
+                		</group>
+                		<group>
+                			<field name="requested_date" readonly="1"></field>
+                			<field name="user_id" readonly="1"></field>
+                			<field name="attachment_id" invisible="1"/>
+                		</group>
+                	</group>
+				</sheet>
+				<div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+			</form>
+		</field>
+	</record>
+				
+	<record id="action_bol_product_ept" model="ir.actions.act_window">
+        <field name="name">Bol Product</field>
+		<field name="res_model">bol.product.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="bol_product_tree_view_ept"/>
+        <field name="help" type="html">
+             <div>
+                 <br/><br/><br/>
+                 <p>
+                   <b>There are no any Bol Product Created yet</b>
+                 </p>
+                 <p>
+                   You can't create Bol products directly from here. In order to create products for Bol, 
+                   You need to go to menu <b>Sales >> Products >> Products</b> and in list view of Product, select one or more products which you want to export to Bol.
+                   At the top side, under the "More" section, you will find an option <b>"Prepare Product for Export in Bol"</b>. 
+                   Clicking on that option, you will be asked to select Bol Instance. After those products successfully prepared for Bol, you can see all of them over here in this menu. 
+                   However here you can open those products and add more Bol specific attribute values to products. Once all products are well configured with proper values, you can export 
+                   them to Bol.  
+                 </p>
+             </div>
+		</field>
+   	</record>
+   	
+   	<record id="action_bol_product_sync_ept" model="ir.actions.act_window">
+        <field name="name">Bol Sync Product</field>
+		<field name="res_model">bol.product.sync.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="bol_product_sync_tree_view_ept"/>
+        <field name="help" type="html">
+             <div>
+                 <br/><br/><br/>
+                 <p>
+                   <b>There are no any Bol Product Sync Processed yet</b>
+                 </p>
+             </div>
+		</field>
+   	</record>
+   	
+     <menuitem id="menu_item_parent_bol_products_ept" name="Products"
+      parent="bol_ept.bol_main_menu" sequence="8"/>
+
+     <menuitem id="menu_item_bol_products_ept" name="Products"
+      parent="bol_ept.menu_item_parent_bol_products_ept" sequence="3"
+	  action="action_bol_product_ept"/>
+	 
+	 <menuitem id="menu_item_bol_products_sync_ept" name="Sync Products"
+      parent="bol_ept.menu_item_parent_bol_products_ept" sequence="4"
+	  action="action_bol_product_sync_ept"/>
+
+	<record id="action_bol_product_instance_ept" model="ir.actions.act_window">
+        <field name="name">Bol Products</field>
+		<field name="res_model">bol.product.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="bol_product_tree_view_ept"/>
+		<field name="domain">[('bol_instance_id','=',active_id)]</field>
+	</record> 	  
+      
+	<record id="action_bol_product_exported_ept" model="ir.actions.act_window">
+        <field name="name">Exported Product</field>
+		<field name="res_model">bol.product.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="bol_product_tree_view_ept"/>
+		<field name="domain">[('exported_in_bol','=',True),('bol_instance_id','=',active_id)]</field>
+	</record>
+	<record id="action_bol_product_not_exported_ept" model="ir.actions.act_window">
+        <field name="name">Ready to Export Product</field>
+		<field name="res_model">bol.product.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="bol_product_tree_view_ept"/>
+		<field name="domain">[('exported_in_bol','=',False),('bol_instance_id','=',active_id)]</field>
+	</record>
+	
+	<record id="action_bol_product_published_ept" model="ir.actions.act_window">
+        <field name="name">Published Product</field>
+		<field name="res_model">bol.product.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="bol_product_tree_view_ept"/>
+		<field name="domain">[('publish','=',True),('bol_instance_id','=',active_id)]</field>
+	</record>
+	
+	<record id="action_bol_product_not_published_ept" model="ir.actions.act_window">
+        <field name="name">Unpublished Products</field>
+		<field name="res_model">bol.product.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="bol_product_tree_view_ept"/>
+		<field name="domain">[('publish','=',False),('bol_instance_id','=',active_id),('exported_in_bol','=',True)]</field>
+	</record>	
+
+	<record id="act_bol_template" model="ir.actions.act_window">
+		<field name="name">Bol Products</field>
+		<field name="res_model">bol.product.ept</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('product_id','=',active_id)]</field>
+		<field name="context">{'search_default_product_id': active_id}</field>                                
+	</record>	
+	
+	<record id="product_template_bol_button" model="ir.ui.view">
+		<field name="name">product.product.bol.button</field>
+		<field name="model">product.product</field>
+		<field name="priority">55</field>
+		<field name="inherit_id" ref="product.product_normal_form_view" />
+		<field name="arch" type="xml">
+			<div name="button_box" position="inside">
+				<button class="oe_stat_button" name="%(bol_ept.act_bol_template)d" type="action"
+					attrs="{'invisible':[('type', '=', 'service')]}" icon="fa-external-link" help="Bol Products">
+					<field string="Bol Products" name="bol_product_count" widget="statinfo" />
+				</button>
+			</div>
+		</field>
+	</record>
+	
+	<record id="act_bol_template_products" model="ir.actions.act_window">
+		<field name="name">Bol Products</field>
+		<field name="res_model">bol.product.ept</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('product_id.product_tmpl_id','=',active_id)]</field>                                
+	</record>
+	
+	<record id="product_template_products_bol_button" model="ir.ui.view">
+		<field name="name">product.product.bol.button</field>
+		<field name="model">product.template</field>
+		<field name="inherit_id" ref="product.product_template_only_form_view"/>
+		<field name="arch" type="xml">
+			<div name="button_box" position="inside">
+				<button class="oe_stat_button" name="%(bol_ept.act_bol_template_products)d" type="action"
+					attrs="{'invisible':[('type', '=', 'service')]}" icon="fa-external-link" help="Bol Products">
+					<field string="Bol Products" name="bol_product_count" widget="statinfo" />
+				</button>
+			</div>
+		</field>
+	</record>
+		
+   </data>
+</odoo>

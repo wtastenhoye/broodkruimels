@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<odoo>
+  <data>	
+
+	<record id="bol_fbr_transport_tree_view_ept" model="ir.ui.view">
+	    <field name="name">Bol FBR Tranasport Tree View</field>
+	    <field name="model">bol.fbr.transport.ept</field>
+		<field name="arch" type="xml">
+            <tree string="Bol FBR Trasnport Tree View" create="false" editable="bottom">            
+            	<field name="name" readonly="1"/>
+	            <field name="code" readonly="1"/>
+	            <field name="carrier_id"/>
+	        </tree>
+		</field>
+	</record>
+	
+	<record model="ir.ui.view" id="bol_fbr_transport_search_view_ept">
+		<field name="name">Bol FBR Transport Search View</field>
+		<field name="model">bol.fbr.transport.ept</field>
+		<field name="type">search</field>
+		<field name="arch" type="xml">
+			<search string="Bol FBR Transports">
+                <field name="name" string="FBR Transport" filter_domain="[('name','ilike',self)]"/>
+                <group expand="0" string="Group By">
+	                <filter string="Instance" domain="[]" context="{'group_by':'bol_instance_id'}"/>
+	            </group>
+			</search>
+		</field>
+	</record>
+	
+	<record id="action_bol_fbr_transport_ept" model="ir.actions.act_window">
+        <field name="name">FBR Transports</field>
+		<field name="res_model">bol.fbr.transport.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="bol_fbr_transport_tree_view_ept"/>
+    </record>
+	
+    <menuitem id="menu_item_bol_fbr_transport_ept" name="FBR Transports"
+      parent="bol_ept.menu_configuration_ept" sequence="8"
+	  action="action_bol_fbr_transport_ept"/>
+	  
+   </data>
+</odoo>

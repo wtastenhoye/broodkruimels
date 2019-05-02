@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+     <record id="act_sale_workflow_process_form" model="ir.actions.act_window">
+         <field name="name">Auto Workflow</field>
+         <field name="res_model">sale.workflow.process.ept</field>
+         <field name="view_type">form</field>
+         <field name="view_mode">tree,form</field>
+     </record>
+          
+     <record id="act_sale_workflow_process_log_ept" model="ir.actions.act_window">
+         <field name="name">Auto Workflow Log</field>
+         <field name="res_model">transaction.log.ept</field>
+         <field name="view_type">form</field>
+         <field name="view_mode">tree,form</field>
+     </record>
+
+     <menuitem id="bol_instance_menu_item_sale_autoworkflow" name="Sale Auto Workflow"
+      parent="bol_ept.menu_configuration_ept"
+      action="act_sale_workflow_process_form" sequence="50" groups="bol_ept.group_bol_manager_ept"/>
+      
+     <menuitem id="bol_instance_menu_item_sale_autoworkflow_log" name="Sale Auto Workflow Log"
+      parent="bol_ept.menu_configuration_ept"
+      action="act_sale_workflow_process_log_ept" sequence="51" groups="bol_ept.group_bol_manager_ept"/>
+     
+    </data>
+</openerp>

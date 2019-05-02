@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	   <data noupdate="1">
+	        <record id="seq_bol_fbb_inventory_adjustment_ept" model="ir.sequence">
+	            <field name="name">Bol FBB Inventory Adjustment</field>
+	            <field name="code">stock.inventory</field>
+	            <field name="padding">5</field>
+	            <field name="prefix">BOL FBB Inventory Adjustment:</field>
+	            <field name="company_id" eval="False"/>
+	        </record>
+	        <record id="seq_bol_fbb_nck_inventory_adjustment_ept" model="ir.sequence">
+	            <field name="name">Bol FBB NCK Inventory Adjustment</field>
+	            <field name="code">stock.inventory</field>
+	            <field name="padding">5</field>
+	            <field name="prefix">BOL FBB NCK Inventory Adjustment:</field>
+	            <field name="company_id" eval="False"/>
+	        </record>
+	   </data>
+		<record id="view_inventory_form_ext_ept" model="ir.ui.view">
+            <field name="name">stock.inventory.bol.form</field>
+            <field name="model">stock.inventory</field>
+            <field name="inherit_id" ref="stock.view_inventory_form"/>
+            <field name="arch" type="xml">
+            	<field name="filter" position="after">
+            		<field name="bol_instance_id" readonly="1" attrs="{'invisible':[('bol_instance_id','=',False)]}"/>
+            	</field>
+            </field>
+        </record>
+		
+		<record id="view_inventory_tree_ext_ept" model="ir.ui.view">
+            <field name="name">stock.inventory.bol.tree</field>
+            <field name="model">stock.inventory</field>
+            <field name="arch" type="xml">
+            	<tree string="Lot/Serial Number Inventory" decoration-muted="state == 'cancel'" create="false">
+	                <field name="name"/>
+	                <field name="date"/>
+	                <field name="state"/>
+	            </tree>
+            </field>
+        </record>
+		
+		<record id="action_bol_inventory_adjustment_ept" model="ir.actions.act_window">
+	        <field name="name">FBB Inventory Adjustment</field>
+			<field name="res_model">stock.inventory</field>
+	        <field name="view_type">form</field>
+	        <field name="view_mode">tree,form</field>
+	        <field name="view_id" ref="view_inventory_tree_ext_ept"/>
+			<field name="domain">[('bol_instance_id','!=',False)]</field>
+		</record>        		        
+
+      <menuitem id="menu_item_parent_bol_inventory_ept" name="Inventory"
+      parent="bol_ept.bol_main_menu" sequence="9"/>
+      
+      <menuitem id="menu_item_parent_bol_inventory_adj_ept" name="FBB Inventory Adjustment"
+      parent="bol_ept.menu_item_parent_bol_inventory_ept" action="action_bol_inventory_adjustment_ept" sequence="4"/>
+	
+</odoo>

@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<odoo>
+  <data>
+  	<menuitem id="bol_main_menu" name="Bol" string="BOL Dashboard" sequence="20" 
+  		groups="bol_ept.group_bol_ept" web_icon="bol_ept,static/description/icon.png"/>
+  	
+  	<menuitem id="menu_configuration_ept" name="Configuration"
+      		parent="bol_ept.bol_main_menu" sequence="50" groups="bol_ept.group_bol_ept"/>
+    
+  </data>
+</odoo>

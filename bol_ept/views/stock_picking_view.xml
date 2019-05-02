@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+        <record id="view_picking_form_bol_ept" model="ir.ui.view">
+            <field name="name">stock.picking.form</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"></field>
+            <field name="arch" type="xml">
+            	<xpath expr="//header" position="inside">
+            		<button name="get_process_status" type="object" class="oe_highlight" attrs="{'invisible':['|',('fullfillment_method','!=','FBR'),'|',('bol_process_status_id','=',False),('process_status','!=','PENDING')]}" string="Check Delivery Status"/> 
+            	</xpath>
+		    	<field name="carrier_id" position="before">
+		    		<field name="bol_instance_id" invisible="1"/>
+		    		<field name="fbb_transport_id" options="{'no_create': True, 'no_open': True}" readonly="1" attrs="{'invisible':[('fullfillment_method','!=','FBB')]}"></field>
+		    		<field name="fbr_transport_id" options="{'no_create': True, 'no_open': True}" attrs="{'invisible':[('fullfillment_method','!=','FBR')],'readonly':[('state','=','done')],'required':[('fullfillment_method','=','FBR')]}"></field>	
+		    	</field>
+		    	<field name="carrier_tracking_ref" position="attributes">
+		    		<attribute name="attrs">{'required':[('fullfillment_method','=','FBR')],'readonly':[('state','=','done')]}</attribute>
+		    	</field>
+		    	<xpath expr="//notebook" position="inside">
+		    		<page string="Bol Info" attrs="{'invisible':[('bol_instance_id','=',False)]}">
+		    			<group>
+			    			<group>
+			    				<field name="bol_shipment_id" readonly="1"/>
+			    				<field name="fullfillment_method"/>
+			    				<field name="bol_instance_id" options="{'no_create':True,'no_open':True}" readonly="1"/>
+			    				<field name="bol_trasport_id" attrs="{'invisible':[('fullfillment_method','!=','FBR')]}" readonly="1"/>
+			    			</group>
+			    			<group attrs="{'invisible':[('fullfillment_method','!=','FBR')]}">
+			    				<field name="updated_in_bol" attrs="{'readonly':[('process_status','not in',['FAILURE','TIMEOUT'])]}"/>
+			    				<field name="updated_transport_detail" attrs="{'readonly':[('process_status','not in',['FAILURE','TIMEOUT']),('event_type','=','CHANGE_TRANSPORT')]}"/>
+			    				<field name="process_status" readonly="1"/>
+			    				<field name="bol_process_status_id" readonly="1"/>
+			    				<field name="event_type"/>
+			    				<field name="error_message" readonly="1"/>
+			    			</group>
+		    			</group>
+		    		</page>
+		    	</xpath>
+		    </field>
+        </record>
+     </data>
+</odoo>

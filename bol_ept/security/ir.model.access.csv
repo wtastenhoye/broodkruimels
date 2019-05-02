@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bol_instance_ept,bol_instance_ept,model_bol_instance_ept,bol_ept.group_bol_ept,1,1,1,0
+access_bol_instance_ept_manager,bol_instance_ept,model_bol_instance_ept,bol_ept.group_bol_manager_ept,1,1,1,1
+access_bol_inbound_shipment_ept,bol_inbound_shipment_ept,model_bol_inbound_shipment_ept,bol_ept.group_bol_manager_ept,1,1,1,1
+access_bol_inbound_shipment_line_ept,bol_inbound_shipment_line_ept,model_bol_inbound_shipment_line_ept,bol_ept.group_bol_manager_ept,1,1,1,1
+access_bol_product_ept,bol_product_ept,model_bol_product_ept,,1,1,1,1
+access_bol_product_sync_ept,bol_product_sync_ept,model_bol_product_sync_ept,,1,1,1,1
+access_bol_product_status_ept,bol_product_status_ept,model_bol_product_status_ept,,1,1,1,1
+access_bol_process_job_ept,bol_process_job_ept,model_bol_process_job_ept,bol_ept.group_bol_ept,1,1,1,1
+access_bol_job_log_ept,bol_job_log_ept,model_bol_job_log_ept,bol_ept.group_bol_ept,1,1,1,1
+access_bol_fbb_transport_ept,bol_fbb_transport_ept,model_bol_fbb_transport_ept,bol_ept.group_bol_ept,1,1,1,1
+access_bol_delivery_window_ept,bol_delivery_window_ept,model_bol_delivery_window_ept,bol_ept.group_bol_ept,1,1,1,1
+access_bol_fbr_transport_ept,bol_fbr_transport_ept,model_bol_fbr_transport_ept,bol_ept.group_bol_ept,1,1,1,1
+access_bol_inbound_shipment_ept,bol_inbound_shipment_ept,model_bol_inbound_shipment_ept,bol_ept.group_bol_manager_ept,1,1,1,1
+access_return_handle_ept,bol_return_handle_ept,model_return_handle_ept,bol_ept.group_bol_manager_ept,1,1,1,1

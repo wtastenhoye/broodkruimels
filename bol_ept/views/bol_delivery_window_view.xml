@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<odoo>
+  <data>	
+
+	<record id="bol_delivery_window_form_view_ept" model="ir.ui.view">
+	    <field name="name">Bol Delivery Window Tree View</field>
+	    <field name="model">bol.delivery.window.ept</field>
+		<field name="arch" type="xml">
+            <form>
+            	<group>
+	            	<field name="delivery_date" required="1"></field>
+	            	<field name="items_to_send" required="1"></field>
+            	</group>
+            	<footer>
+	            	<button name="import_delivery_window" string="Get Delivery Window" type="object" class="oe_highlight"/>                      
+	                <button string="Cancel" class="oe_highlight" special="cancel" />
+	            </footer>
+            </form>
+		</field>
+	</record>
+		
+	<!-- <record id="action_bol_delivery_window_ept" model="ir.actions.act_window">
+        <field name="name">Delivery Windows</field>
+		<field name="res_model">bol.delivery.window.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="bol_delivery_window_tree_view_ept"/>
+        <field name="help" type="html">
+             <div>
+                 <br/><br/><br/>
+                 <p>
+                   <b>There are no any Delivery Windows available yet</b>
+                 </p>
+             </div>
+		</field>
+   	</record> -->
+	
+    <!-- <menuitem id="menu_item_bol_delivery_window_ept" name="Delivery Windows"
+      parent="bol_ept.menu_configuration_ept" sequence="9"
+	  action="action_bol_delivery_window_ept"/> -->
+	  
+   </data>
+</odoo>

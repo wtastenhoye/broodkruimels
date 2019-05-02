@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+
+		<record id="view_tree_handle_return_ept" model="ir.ui.view">
+            <field name="name">return.handle.ept.tree</field>
+            <field name="model">return.handle.ept</field>
+            <field name="arch" type="xml">
+		    	<tree create="false">            
+					<field name="name"/>
+					<field name="return_date"/>
+					<field name="partner_id"/>
+					<field name="sale_id"/>
+					<field name="product_id"/>
+					<field name="qty"/>
+					<field name="state"/>
+                </tree>
+            </field>
+        </record>
+        
+        <record id="view_search_handle_return_ept" model="ir.ui.view">
+			<field name="name">handle.return.search.view</field>
+			<field name="model">return.handle.ept</field>
+			<field name="type">search</field>
+			<field name="arch" type="xml">
+				<search string="Handle Return">
+					<field name="name"/>
+					<field name="sale_id"/>
+					<field name="partner_id"/>
+					<field name="product_id"/>
+					<group expand="0" string="Group By..">
+						<filter string="Instance" context="{'group_by':'bol_instance_id'}"/>
+						<filter string="Return Reason" context="{'group_by':'return_reason'}"/>													
+						<filter string="Action" context="{'group_by':'action'}"/>
+						<filter string="Product" context="{'group_by':'product_id'}"/>
+						<filter string="Order" context="{'group_by':'sale_id'}"/>
+						<filter string="State" context="{'group_by':'state'}"/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+        <record id="view_form_handle_return_ept" model="ir.ui.view">
+                <field name="name">return.handle.ept.form</field>
+                <field name="model">return.handle.ept</field>
+                <field name="type">form</field>
+                <field name="arch" type="xml">
+                    <form create="0">
+                    	<header>
+                    		<button name="start_claim" type="object" states="draft" string="Start" class="oe_highlight"></button>
+                    		<button name="process_claim" type="object" states="process" string="Validate" class="oe_highlight"></button>
+                    		<button name="get_process_status" type="object" string="Get Process Status" attrs="{'invisible':['|',('bol_process_status_id','=',False),('process_status','=','FAILURE')]}" class="oe_highlight"></button>
+                    		<field name="state" widget="statusbar"></field>                    		
+                    	</header>
+                    	<sheet>
+                    		<div class="oe_button_box" name="button_box">
+								<button class="oe_stat_button" name="show_pickings" type="object" icon="fa-truck">
+									<span class="o_stat_text">Delivery</span>
+								</button>
+							</div>
+                    		<h1>
+		                        <field name="name" class="oe_inline" readonly="1"/>
+		                    </h1>
+		                    <group colspan="4" col="4">
+		                    	<field name="return_reason" readonly="1"></field>
+		                    	<field name="return_date" readonly="1"></field>
+		                    	<field name="partner_id" readonly="1"></field>
+		                    	<field name="sale_id" readonly="1"></field>
+		                    	<field name="product_id" readonly="1"></field>
+		                    	<field name="qty" readonly="1"></field>
+		                    	<field name="return_qty" required="1"></field>
+		                    	<field name="action" attrs="{'invisible':[('state','=','draft')]}"></field>
+		                    	<field name="bol_instance_id" readonly="1"></field>
+		                    </group>
+		                    <notebook>
+		                    <page string="Return Comment">
+		                    	<group>
+		                    		<field name="description" readonly="1" nolabel="1"></field>
+		                    	</group>
+		                    </page>
+		                    <page string="Process Status" states="close">
+		                    	<group>
+		                    		<group>
+			                    		<field name="bol_process_status_id" readonly="1"></field>
+			                    		<field name="process_status" readonly="1"></field>
+		                    		</group>
+		                    		<group>
+			                    		<field name="error_message" readonly="1"></field>
+			                    		<!-- <field name="event_type"></field> -->
+		                    		</group>
+		                    	</group>
+		                    	<group>
+		                    		<field name="process_description" readonly="1"></field>
+		                    	</group>
+		                    </page>
+		                    </notebook>
+                    	</sheet>
+                    	<div class="oe_chatter">
+		                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+		                    <field name="message_ids" widget="mail_thread"/>
+		                </div>
+                    </form>
+                </field>
+        </record>
+	
+		<record id="action_handle_return_ept" model="ir.actions.act_window">
+			<field name="name">Handle Returns</field>
+			<field name="res_model">return.handle.ept</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="view_id" ref="view_tree_handle_return_ept"></field>
+            <field name="help" type="html">
+              <div class="oe_empty_bol_sale_order">
+                  <br/><br/>
+                  <p>
+                    <b>There is no any Return Requests synchronised from any of your Bol.com Instance yet.</b>
+                  </p>
+                  <p>
+                    You can't create Return Requests manually. Through only import Return Requests from
+                    any of your Bol.com Instance, you can see your Return Requests here.
+                  </p>
+		      </div>
+          </field>
+		</record>
+	
+	<menuitem id="bol_menu_handle_return_ept" name="Returns"
+      parent="bol_ept.bol_main_menu" 
+      sequence="8"/>
+	
+	<menuitem id="bol_submenu_handle_return_ept" name="Handle Returns"
+      parent="bol_ept.bol_menu_handle_return_ept" 
+      action="action_handle_return_ept"
+      sequence="10"/>
+	
+	</data>
+</odoo>

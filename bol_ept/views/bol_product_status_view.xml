@@ -1,0 +1,94 @@
+<?xml version="1.0" ?>
+<odoo>
+	<data noupdate="1">
+        <record id="seq_bol_product_status_job" model="ir.sequence">
+            <field name="name">Bol Product status Job Sequence</field>
+            <field name="code">bol.product.status.process.job</field>
+            <field name="padding">5</field>
+            <field name="prefix">PRS</field>
+            <field name="company_id" eval="False"/>
+        </record>
+   </data>
+   
+  <data>	
+	<record id="bol_product_status_tree_view_ept" model="ir.ui.view">
+	    <field name="name">Bol Product Status View</field>
+	    <field name="model">bol.product.status.ept</field>
+		<field name="arch" type="xml">
+            <tree string="Bol Product Status View" create="false">            
+            	<field name="name"/>
+	            <field name="bol_instance_id"></field>
+	            <field name="state"/>
+			</tree>
+		</field>
+	</record>
+	
+	<record model="ir.ui.view" id="bol_product_status_search_view_ept">
+		<field name="name">Bol Product Search View</field>
+		<field name="model">bol.product.ept</field>
+		<field name="type">search</field>
+		<field name="arch" type="xml">
+			<search string="Bol Products">
+                <field name="name" string="Reference" filter_domain="[('name','ilike',self)]"/>
+                <group expand="0" string="Group By">
+	                <filter string="Instance" domain="[]" context="{'group_by':'bol_instance_id'}"/>
+	            </group>
+			</search>
+		</field>
+	</record>
+	
+	<record id="bol_product_status_form_view_ept" model="ir.ui.view">
+		<field name="name">Bol Product status Form View</field>
+		<field name="model">bol.product.status.ept</field>
+		<field name="arch" type="xml">
+			<form string="Bol Product Status Form View" create="false">
+				<header>
+					<button name="get_status" string="Get Status" class="oe_highlight" type="object" states="draft"/>
+					<field name="state" widget="statusbar"/>
+				</header>
+				<sheet>
+					<group>
+						<group>
+							<field name="name" readonly="1"/>
+							<field name="created_at" readonly="1"/>
+						</group>
+						<group>
+							<field name="bol_instance_id" readonly="1"/>
+							<field name="user_id" readonly="1"/>
+						</group>
+					</group>
+					<group string="Products">
+						<field name="bol_product_ids" nolabel="1" mode="tree" readonly="1">
+							<tree>
+								<field name="name"></field>
+								<field name="published"></field>
+								<field name="reason_code"></field>
+								<field name="reason_message"></field>
+							</tree>
+						</field>
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	
+   	<record id="action_bol_product_status_ept" model="ir.actions.act_window">
+        <field name="name">Bol Product Status</field>
+		<field name="res_model">bol.product.status.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="bol_product_status_tree_view_ept"/>
+        <field name="help" type="html">
+             <div>
+                 <br/><br/><br/>
+                 <p>
+                   <b>There are no any Bol Product Status Processed yet</b>
+                 </p>
+             </div>
+		</field>
+   	</record>
+   	
+     <menuitem id="menu_item_bol_products_status_ept" name="Product Status"
+      parent="bol_ept.menu_item_parent_bol_products_ept" sequence="4"
+	  action="action_bol_product_status_ept"/>
+   </data>
+</odoo>

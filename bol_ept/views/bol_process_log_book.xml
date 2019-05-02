@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data noupdate="1">
+        <record id="seq_bol_file_process_job" model="ir.sequence">
+            <field name="name">Bol File Process Job Sequence</field>
+            <field name="code">bol.file.process.job</field>
+            <field name="padding">5</field>
+            <field name="prefix">LOG</field>
+            <field name="company_id" eval="False"/>
+        </record>
+   </data>
+	
+  <data>
+	<record id="bol_process_job_tree_view_ept" model="ir.ui.view">
+	    <field name="name">Bol Process Job</field>
+	    <field name="model">bol.process.job.ept</field>
+		<field name="type">tree</field>
+		<field name="arch" type="xml">
+            <tree string="Bol Process Job" create='false'>
+            	<field name="name"/>
+				<field name="application"/>
+				<field name="bol_instance_id"/>
+				<field name="operation_type"/>
+				<field name="message"/>
+				<field name="create_date"/>
+			</tree>
+		</field>
+	</record>
+	<record id="bol_process_job_form_view_ept" model="ir.ui.view">
+		<field name="name">Bol Process Job</field>
+		<field name="model">bol.process.job.ept</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+			<form string="Bol Process Job" create="false">
+				<sheet>
+					<group string="General Info">
+						<group>
+							<field name="name" readonly="1"></field>
+							<field name="application" readonly="1"/>
+							<field name="operation_type" readonly="1"/>
+						</group>
+						<group>
+							<field name="create_date" readonly="1"/>
+							<field name="bol_instance_id" readonly="1"/>
+						</group>
+					</group>
+					<group string="Note" colspan="4">
+						<field name="message" readonly="1" nolabel="1"/>
+					</group>
+					<group string="Request">
+						<field name="bol_request" readonly="1" nolabel="1"></field>
+					</group>
+					<group string="Response">
+						<field name="bol_response" readonly="1" nolabel="1"></field>
+					</group>
+					<group string="Transaction Lines Log" colspan="4">
+						<field name="transaction_log_ids" nolabel="1" readonly="1">
+							<tree>
+								<field name="operation_type" invisible="1"/>
+								<field name="log_type"/>		
+								<field name="user_id"/>
+								<field name="message"/>
+							</tree>
+						</field>
+					</group>		
+				</sheet>
+			</form>
+		</field>    
+	</record> 
+	
+		<record id="action_bol_process_job_ept" model="ir.actions.act_window">
+	        <field name="name">Bol Process Job Log</field>
+			<field name="res_model">bol.process.job.ept</field>
+	        <field name="view_type">form</field>
+			<field name="view_id" ref="bol_process_job_tree_view_ept"/>
+	        <!-- <field name="search_view_id" ref="amazon_process_job_search_view_ept"/> -->
+    	</record>
+    	
+    	<record id="action_bol_instance_process_job_ept" model="ir.actions.act_window">
+	        <field name="name">Bol Process Job Log</field>
+			<field name="res_model">bol.process.job.ept</field>
+	        <field name="view_type">form</field>
+			<field name="view_id" ref="bol_process_job_tree_view_ept"/>
+	        <!-- <field name="search_view_id" ref="bol_process_job_search_view_ept"/> -->
+	        <field name="domain">[('bol_instance_id','=',active_id)]</field>
+    	</record>
+
+	<record id="bol_transaction_tree_view_ept" model="ir.ui.view">
+	    <field name="name">Bol Transaction Log Job</field>
+	    <field name="model">bol.job.log.ept</field>
+		<field name="type">tree</field>
+		<field name="arch" type="xml" >
+            <tree string="File Process Job" create="false">
+				<field name="operation_type"/>
+				<field name="log_type"/>	
+				<field name="message"/>				
+			</tree>
+		</field>
+	</record>
+
+	<record id="bol_transaction_log_form_view_ept" model="ir.ui.view">
+		<field name="name">Bol Transaction File Log</field>
+		<field name="model">bol.job.log.ept</field>
+		<field name="type">form</field>
+		<field name="arch" type="xml">
+			<form string="Bol Process Job" create='false'>
+				<sheet>				
+				<group readonly="1">
+					<group string="File Info">
+						<field name="job_id" readonly="1"/>
+						<field name="operation_type"  readonly="1"/>
+						<field name="create_date" readonly="1"/>
+						<field name="log_type"  readonly="1"/>
+					</group>
+					<group string="Message">
+						<field name="message" readonly="1"/>
+					</group>
+				</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	
+		<record id="bol_process_job_search_view_ept" model="ir.ui.view">
+            <field name="name">view.bol.process.log.filter</field>
+            <field name="model">bol.process.job.ept</field>
+			<field name="type">search</field>
+            <field name="arch" type="xml">
+                <search>
+					<field name="name"/>
+					<field name="application" />
+					<field name="operation_type"/>
+					<filter name="filter_app_sales" string="Sales" domain="[('application','=','order')]"/>
+					<filter name="filter_app_product" string="Offer" domain="[('application','=','offer')]"/>
+					<filter name="filter_app_other" string="Inbound Shipment" domain="[('application','=','inbound_shipment')]"/>
+					<newline/>
+					<filter name="filter_operation_export" string="Export" domain="[('operation_type','=','export')]"/>
+					<filter name="filter_operation_import" string="Import" domain="[('operation_type','=','import')]"/>
+	                <group expand="0" string="Group By...">
+						 <filter string="Create Date" icon="terp-personal"  context="{'group_by':'create_date'}"/>
+						 <filter string="Application" icon="terp-personal" context="{'group_by':'application'}"/>
+						 <filter string="Operation" icon="terp-personal" context="{'group_by':'operation_type'}"/>
+					</group>  
+                </search>
+            </field>
+    	</record>
+    	
+    	<record id="bol_job_log_process_transaction_search_view_ept" model="ir.ui.view">
+            <field name="name">view.bol.job.log.ept</field>
+            <field name="model">bol.job.log.ept</field>
+			<field name="type">search</field>
+            <field name="arch" type="xml">
+                <search string="File Process Job">
+					<field name="operation_type"/>
+					<filter name="filter_log_type_not_found" string="Not Found" domain="[('log_type','=','not_found')]"/>
+					<filter name="filter_log_type_mismatch" string="Mismatch" domain="[('log_type','=','mismatch')]"/>
+					<newline/>
+					<filter name="filter_operation_export" string="Export" domain="[('operation_type','=','export')]"/>
+					<filter name="filter_operation_import" string="Import" domain="[('operation_type','=','import')]"/>
+	                <group expand="0" string="Group By...">
+						 <filter string="Create Date" icon="terp-personal"  context="{'group_by':'create_date'}"/>
+						 <filter string="Log Type" icon="terp-personal" context="{'group_by':'log_type'}"/>
+						 <filter string="Operation" icon="terp-personal" context="{'group_by':'operation_type'}"/>
+					</group>  
+                </search>
+            </field>
+    	</record>  
+	
+	
+	<record id="action_bol_mismatch_log_ept" model="ir.actions.act_window">
+		<field name="name">Bol Mismatch Details</field>
+		<field name="res_model">bol.job.log.ept</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+	</record>
+	
+	<record id="action_bol_instance_mismatch_log_ept" model="ir.actions.act_window">
+		<field name="name">Bol Mismatch Details</field>
+		<field name="res_model">bol.job.log.ept</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('job_id.bol_instance_id','=',active_id),('log_type','=','mismatch')]</field>
+   </record>
+	
+	<menuitem id="menu_bol_log_ept" name="Log"
+			parent="bol_ept.bol_main_menu" groups="bol_ept.group_bol_manager_ept"
+			sequence="16" />
+    
+    <menuitem id="bol_file_process_job_log" name="Process Job Log"
+      parent="menu_bol_log_ept" sequence="3"
+	  action="action_bol_process_job_ept"/>	  
+	  
+	<menuitem id="amazon_file_process_mismatch_log_ept" name="Mismatch Details"
+      parent="menu_bol_log_ept" sequence="4"
+	  action="action_bol_mismatch_log_ept"/>	  
+
+	</data>
+	
+ </odoo>

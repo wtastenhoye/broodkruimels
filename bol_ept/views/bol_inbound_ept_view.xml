@@ -1,0 +1,192 @@
+<?xml version="1.0" ?>
+<odoo>
+   <data noupdate="1">
+
+       <record id="seq_bol_inbound_shipment_ept" model="ir.sequence">
+           <field name="name">Bol Inbound Shipment</field>
+           <field name="code">bol.inbound.shipment.ept</field>
+           <field name="prefix">BIS</field>
+           <field name="padding">4</field>
+           <field name="company_id" eval="False"/>
+       </record>
+   </data>
+  <data>
+  	<record id="inbound_shipment_ept_search_view" model="ir.ui.view">
+		<field name="name">inbound.shipment.search.view</field>
+		<field name="model">bol.inbound.shipment.ept</field>
+		<field name="type">search</field>
+		<field name="arch" type="xml">
+			<search string="Inbound Shipment">
+				<field name="name"/>
+				<field name="bol_instance_id"/>
+				<field name="warehouse_id"/>				
+				<field name="state"/>				
+				<group expand="0" string="Group By..">
+					<filter string="Instance" context="{'group_by':'bol_instance_id'}"/>
+					<filter string="Warehouse" context="{'group_by':'warehouse_id'}"/>													
+					<filter string="Status" context="{'group_by':'state'}"/>
+				</group>
+			</search>
+		</field>
+	</record>	
+	<record id="inbound_shipment_ept_tree_view" model="ir.ui.view">
+	    <field name="name">inbound.shipment.tree.view</field>
+	    <field name="model">bol.inbound.shipment.ept</field>
+		<field name="arch" type="xml">
+            <tree string="Inbound Shipment">
+            	<field name="name"/>
+            	<field name="bol_instance_id"/>
+            	<field name="warehouse_id"/>
+	            <field name="state"/>
+			</tree>
+		</field>
+	</record>
+	<record id="inbound_shipment_ept_line_form_view" model="ir.ui.view">
+		<field name="name">inbound.shipment.line.form.view</field>
+		<field name="model">bol.inbound.shipment.line.ept</field>
+		<field name="arch" type="xml">
+			<form string="Inbound Shipment " version='7.0'>
+				<sheet>
+	                 <group>
+	                     <group name="shipment_ept">
+	                     	<field name="product_id"/> 
+	                     	<field name="quantity"/>
+	                    </group>
+	                </group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	<record id="inbound_shipment_ept_form_view" model="ir.ui.view">
+		<field name="name">inbound.shipment.form.view</field>
+		<field name="model">bol.inbound.shipment.ept</field>
+		<field name="arch" type="xml">
+			<form string="Inbound Shipment">
+				<field name="is_delivery_window_received" invisible="1"></field>
+				<field name="shipping_lable_retrived" invisible="1"></field>
+				<field name="packaging_list_received" invisible="1"></field>
+				<field name="product_lable_retrived" invisible="1"></field>
+				<header>
+					<button name="get_delivery_window" attrs="{'invisible':['|',('state','!=','draft'),('is_delivery_window_received','=',True)]}" string="Get Delivery Window" class="oe_highlight" type="object"/>
+					<button name="create_inbound_shipment_ept" attrs="{'invisible':['|',('state','!=','draft'),('is_delivery_window_received','=',False)]}" string="Create Shipment" class="oe_highlight" type="object"/>
+					<button name="get_process_status" type="object" class="oe_highlight" attrs="{'invisible':['|',('state','!=','submitted'),('process_status','!=','PENDING')]}" string="Check Process Status"/>
+					<button name="set_to_draft_ept" states="cancel" string="Reset To Draft" class="oe_highlight" type="object"/>
+					<button name="get_product_label" attrs="{'invisible':['|','|',('state','not in',['draft','submitted']),('is_delivery_window_received','=',False),('labelling_service','=',True)]}" string="Get Product Label" class="oe_highlight" type="object"/>
+					<button name="get_shipping_label" attrs="{'invisible':['|',('state','!=','submitted'),('shipping_lable_retrived','=',True)]}" string="Get Shipment Label" class="oe_highlight" type="object"/>
+					<button name="get_packaging_list" attrs="{'invisible':['|',('state','!=','submitted'),('packaging_list_received','=',True)]}" string="Get Packaging List" class="oe_highlight" type="object"/>
+					<button name="get_shipment_status" attrs="{'invisible':['|',('state','!=','submitted')]}" string="Check Shipment Status" class="oe_highlight" type="object"/>
+					<field name="state" widget="statusbar"/>
+				</header>
+				<sheet>
+					<h1>
+                        <field name="name" class="oe_inline" readonly="1"/>
+                    </h1>
+					<group>
+						<group>
+							<field name="bol_instance_id" widget="selection" required="1" attrs="{'readonly':[('state','!=','draft')]}"/>
+							<field name="warehouse_id" required="1" widget="selection" attrs="{'readonly':[('state','!=','draft')]}"/>
+							<field name="labelling_service" attrs="{'readonly':[('state','!=','draft')]}"/>
+						</group>
+						<group>
+							<field name="delivery_window_id" domain="[('bol_instance_id','=',bol_instance_id),('bol_shipment_id','=',active_id),('bol_shipment_id','!=',False)]"  widget="selection" attrs="{'readonly':[('state','!=','draft')]}"/>
+							<field name="fbb_trasnport_id" widget="selection" attrs="{'readonly':[('state','!=','draft')]}" domain="[('bol_instance_id','=',bol_instance_id)]"/>
+							<field name="bol_shipment_id" readonly="1"/>
+						</group>
+					</group>
+					<notebook>
+						<page string="Products">
+							<field name="shipment_line_ids" nolabel="1" colspan="4" attrs="{'readonly':[('state','!=','draft')]}">
+			                    <tree string="Shipment Items" editable="bottom">
+			                        <field name="product_id" required="1" domain="[('bol_instance_id','=',parent.bol_instance_id)]" options="{'no_create_edit':1,'no_quick_create':1}"/>
+			                        <field name="barcode" readonly="1"/>
+			                        <field name="quantity" required="1"/>
+			                    </tree>					
+							</field>	
+						</page>
+						<page string='Shipments' attrs="{'invisible': [('picking_ids','=',[])]}">
+							<group string="Pickings">
+								<field name="picking_ids" readonly="1" nolabel="1">
+									<tree string="Shipment">
+										<field name="is_fbb_wh_picking" invisible="1"/>
+										<field name="state" invisible="1"/>
+				                        <field name="name" />
+				                        <field name="bol_shipment_id"/>
+				                        <field name="state"/>
+										<field name="total_shipped_qty"/>
+										<field name="total_received_qty"/>
+				                    </tree>
+								</field>							
+							</group>
+						</page>
+						<page string="Process Status" attrs="{'invisible':[('process_status_id','=',False)]}">
+							<group>
+								<field name="process_status_id" readonly="1"></field>
+								<field name="process_status" readonly="1"></field>
+								<field name="error_message" readonly="1"></field>
+								<field name="event_type" readonly="1"></field>
+							</group>
+						</page>
+					</notebook>
+				</sheet>				
+				<div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+               	</div>
+			</form>
+		</field>
+	</record>
+	<record id="action_inbound_shipment_ept" model="ir.actions.act_window">
+        <field name="name">Inbound Shipment </field>
+		<field name="res_model">bol.inbound.shipment.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="inbound_shipment_ept_tree_view"/>
+   	</record>
+
+	<record id="action_inbound_shipment_ept" model="ir.actions.act_window">
+        <field name="name">Inbound Shipment </field>
+		<field name="res_model">bol.inbound.shipment.ept</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="inbound_shipment_ept_tree_view"/>
+   	</record>
+   	
+	<record id="action_draft_bol_instance_inbound_shipment_ept" model="ir.actions.act_window">
+        <field name="name">Draft Inbound Shipment </field>
+		<field name="res_model">bol.inbound.shipment.ept</field>
+        <field name="view_type">form</field>
+        <field name="domain">[('state','=','draft'),('bol_instance_id','=',active_id)]</field>
+        <field name="view_id" ref="inbound_shipment_ept_tree_view"/>
+   	</record>
+
+	<record id="action_submitted_bol_instance_inbound_shipment_ept" model="ir.actions.act_window">
+        <field name="name">Submitted Inbound Shipment </field>
+		<field name="res_model">bol.inbound.shipment.ept</field>
+        <field name="view_type">form</field>
+        <field name="domain">[('state','=','submitted'),('bol_instance_id','=',active_id)]</field>
+        <field name="view_id" ref="inbound_shipment_ept_tree_view"/>
+   	</record>   	   	
+
+    <menuitem id="bol_inbound_menu_core" name="Inbound"
+     parent="bol_ept.bol_main_menu" sequence="10" groups="bol_ept.group_bol_manager_ept"/>
+
+    <menuitem id="bol_inbound_shipment_ept_menu" name="Inbound Shipment"
+     parent="bol_inbound_menu_core" sequence="1"
+	 action="action_inbound_shipment_ept"/>
+	
+	<record id="view_bol_product_label_ept" model="ir.ui.view">
+            <field name="name">Product Label</field>
+            <field name="model">product.label.format.ept</field>
+            <field name="arch" type="xml">
+                <form>
+                	<group>
+                		<field name="label_format" required="1"></field>
+                	</group>
+                	<footer>
+                		<button name="get_product_lables" string="Get Product Labels" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_highlight" special="cancel"/>
+                    </footer>
+               </form>
+            </field>
+    </record>
+
+  </data>
+</odoo>

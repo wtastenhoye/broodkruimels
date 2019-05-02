@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_delivery_carrier_PostNL_form_view_ept"
+            model="ir.ui.view">
+        <field name="name">delivery.carrier.PostNL.form.view.ept</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[1]" position="before">
+                <page string="Pricing"
+                      attrs="{'invisible': [('delivery_type', 'not in', ['postnl_ept'])]}">
+                    <group
+                            attrs="{'invisible':['|',('delivery_type', '==', 'base_on_rule'),('delivery_type_postnl_ept', '==', 'base_on_rule_ept')]}">
+                        <group>
+                            <field name="fixed_price"/>
+                        </group>
+                    </group>
+                    <group name="general"
+                           attrs="{'invisible':['|',('delivery_type', '==', 'fixed'),('delivery_type_postnl_ept', '==', 'fixed_ept')]}">
+                        <field name="price_rule_ids" nolabel="1"/>
+                    </group>
+                </page>
+            </xpath>
+            <xpath expr="//field[@name='shipping_instance_id']" position="after">
+                <field name="delivery_type_postnl_ept" widget="radio"
+                       attrs="{'invisible': [('delivery_type', '!=', 'postnl_ept')], 'required': [('delivery_type', '==', 'postnl_ept')]}"/>
+            </xpath>
+            <xpath expr="//page[@name='destination']" position='before'>
+                <page string="Configuration" name="Postnl_configuration"
+                      attrs="{'invisible': [('delivery_type', '!=', 'postnl_ept')]}">
+                    <p class="alert alert-danger">
+                        Note : Weight UOM must be select Gram in PostNL provider.
+                    </p>
+                    <group>
+                        <group>
+                            <field name="postnl_product" attrs="{'required': [('delivery_type', '=', 'postnl_ept')]}"/>
+
+                            <field name="barcode_type" attrs="{'required': [('delivery_type', '=', 'postnl_ept')]}"/>
+
+                            <field name="product_combination"/>
+                            <field name="is_cod"/>
+                            <field name="is_insured"/>
+                            <field name="is_pickup"/>
+
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

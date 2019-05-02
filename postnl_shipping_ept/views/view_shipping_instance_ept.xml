@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="view_postnl_configuration" model="ir.ui.view">
+		<field name="name">PostNL Configuration View</field>
+		<field name="model">shipping.instance.ept</field>
+		<field name="type">form</field>
+		<field name="inherit_id" ref="shipping_integration_ept.view_shipping_integration"></field>
+		<field name="arch" type="xml">
+			<xpath expr="//notebook/page[@name='credential']/group" position="inside">
+				<group attrs="{'invisible': [('provider', '!=', 'postnl_ept')]}">
+						<field name="postnl_customer_code" attrs="{'required':[('provider','=','postnl_ept')]}"></field> 
+						<field name="postnl_customer_number" attrs="{'required':[('provider','=','postnl_ept')]}"></field> 
+						<field name="postnl_apikey" attrs="{'required':[('provider','=','postnl_ept')]}"></field> 
+				</group>
+			</xpath>
+		</field>
+	</record>
+</odoo>

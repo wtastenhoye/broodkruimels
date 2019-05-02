@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<record id="stock_warehouse_form_view_ext_ept" model="ir.ui.view">
+		<field name="name">stock.warehouse</field>
+		<field name="model">stock.warehouse</field>
+		<field name="inherit_id" ref="stock.view_warehouse"></field>
+		<field name="arch" type="xml">
+			<field name="partner_id" position="after">
+				<field name="is_fbb_warehouse"></field>
+				<field name="nck_stock_location" attrs="{'invisible':[('is_fbb_warehouse','!=',True)],'required':[('is_fbb_warehouse','=',True)]}"/>
+			</field>
+		</field>
+	</record>
+</odoo>

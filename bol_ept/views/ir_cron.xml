@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record id="ir_cron_import_bol_fbb_orders" model="ir.cron">
+            <field name="name">Import Bol FBB Orders (Do Not Delete)</field>
+            <field eval="False" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="state">code</field>
+            <field name="doall">False</field>
+            <field eval="ref('model_sale_order')" name="model_id"/>
+            <field name="code">model.auto_import_bol_fbb_sale_order_ept()</field>
+        </record>
+        <record id="ir_cron_import_bol_fbr_orders" model="ir.cron">
+            <field name="name">Import Bol FBR Orders (Do Not Delete)</field>
+            <field eval="False" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="state">code</field>
+            <field name="doall">False</field>
+            <field eval="ref('model_sale_order')" name="model_id"/>
+            <field name="code">model.auto_import_bol_fbr_sale_order_ept()</field>
+        </record>
+        <record id="ir_cron_update_bol_stock" model="ir.cron">
+            <field name="name">Update Bol Product Stock (Do Not Delete)</field>
+            <field eval="False" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="state">code</field>
+            <field name="doall">False</field>
+            <field eval="ref('model_bol_product_ept')" name="model_id"/>
+            <field name="code">model.auto_update_stock()</field>
+        </record>
+        <record id="ir_cron_import_shipment" model="ir.cron">
+            <field name="name">Import Bol Shipments (Do Not Delete)</field>
+            <field eval="False" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="state">code</field>
+            <field name="doall">False</field>
+            <field eval="ref('model_stock_picking')" name="model_id"/>
+            <field name="code">model.auto_import_shipment()</field>
+        </record>
+        <record id="ir_cron_retrive_shipment_status" model="ir.cron">
+            <field name="name">Retrive Shipments Statuses (Do Not Delete)</field>
+            <field eval="False" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="state">code</field>
+            <field name="doall">False</field>
+            <field eval="ref('model_stock_picking')" name="model_id"/>
+            <field name="code">model.auto_retrive_shipment_status_ept()</field>
+        </record>
+        <record id="ir_cron_update_bol_order_status" model="ir.cron">
+            <field name="name">Update Bol Order Status (Do Not Delete)</field>
+            <field eval="False" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="state">code</field>
+            <field name="doall">False</field>
+            <field eval="ref('model_sale_order')" name="model_id"/>
+            <field name="code">model.auto_update_bol_order_status_ept()</field>
+        </record>
+        <record id="ir_cron_import_fbb_inventory" model="ir.cron">
+            <field name="name">Import FBB Inventory (Do Not Delete)</field>
+            <field eval="False" name="active"/>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="state">code</field>
+            <field name="doall">False</field>
+            <field eval="ref('model_stock_inventory')" name="model_id"/>
+            <field name="code">model.auto_import_fbb_inventory_ept()</field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_res_config_bol_instance" model="ir.ui.view">
+            <field name="name">Configure Instance</field>
+            <field name="model">res.config.bol.instance</field>
+            <field name="arch" type="xml">
+                <form string="Configure Instance" class="oe_form_configuration">
+					<group>
+                    	<group>
+                    		<field name="name" required="1"/>
+                    		<field name='bol_country_id' required="1" options="{'no_create':True,'no_create_edit': True}" />
+                    	</group>
+                    </group>
+                    <group>
+                    	<field name="public_key" required="1" password="True"></field>
+                    	<field name="private_key" required="1" password="True"></field>
+                    	<field name="test_environment"></field>
+                    </group>                    
+                	<footer>
+                        <button string="Create" type="object" name="test_bol_connection" class="oe_highlight"/>
+                        or
+                        <button  class="oe_highlight" special="cancel" string="Cancel"/>
+                    </footer>                    
+                </form>
+            </field>
+        </record>                
+        
+        <record id="res_config_action_bol_instance" model="ir.actions.act_window">
+            <field name="name">Instances</field>
+            <field name="res_model">res.config.bol.instance</field>
+            <field name="view_mode">form</field>
+            <field name="view_type">form</field>
+            <field name="target">new</field>
+            <field name="view_id" ref="view_res_config_bol_instance"/>
+        </record>        
+
+        <record id="view_bol_config_settings" model="ir.ui.view">
+            <field name="name">Bol Settings</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="1"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+             	<xpath expr="//div[hasclass('settings')]" position="inside">
+                	<div class="app_settings_block" data-string="Bol" data-key="bol_ept">
+                    <h2>Bol Instances</h2>
+                   	<div class="row mt16 o_settings_container">
+                   		<div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                           		<label for="bol_instance_id" string="Select Instance"/>
+                                <field name="bol_instance_id" attrs="{'required':[('bol_instance_id','!=',False)]}"  widget="selection"/>
+                               	<button name="%(res_config_action_bol_instance)d" icon="fa-arrow-right" type="action" string="Create More Instance" class="oe_link"/>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 attrs="{'invisible': [('bol_instance_id', '=', False)]}">Options</h2>
+                    <div class="row mt16 o_settings_container" attrs="{'invisible': [('bol_instance_id', '=', False)]}">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="fbr_warehouse_id"/>
+                                <div class="text-muted">
+                                    Select FBR Warehouse for your company
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="fbr_warehouse_id" class="o_light_label" widget="selection" domain="[('is_fbb_warehouse','=',False)]" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+                                		<field name="bol_country_id" invisible="1" class="oe_inline"/>
+                    				</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="fbb_warehouse_id"/>
+                                <div class="text-muted">
+                                    Select FBB Warehouse for your company
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="fbb_warehouse_id" class="o_light_label" widget="selection" domain="[('is_fbb_warehouse','=',True)]" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+                                	</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                         <div class="o_setting_left_pane"/>
+                          <div class="o_setting_right_pane">
+                              <label for="bol_company_id"/>
+                              <div class="text-muted">
+                                 Select Company 
+                              </div>
+                              <div class="content-group">
+                              	<div class="mt16">
+                                      <field name="bol_company_id" class="o_light_label" widget="selection" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+                                </div>
+                              </div>
+                          </div> 
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="bol_lang_id"/>
+                                <div class="text-muted">
+                                    Select Language for your Instance
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="bol_lang_id" class="o_light_label" widget="selection" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 attrs="{'invisible': [('bol_instance_id', '=', False)]}">Products Bulk Prepare Operation</h2>
+                    <div class="row mt16 o_settings_container" attrs="{'invisible': [('bol_instance_id', '=', False)]}">
+	                    <div class="col-xs-12 col-md-6 o_setting_box">
+	                        <div class="o_setting_right_pane">
+	                            <label for="default_codition"/>
+	                            <div class="text-muted">
+	                                Default Product Condition apply when product will prepare for export in bol.
+	                            </div>
+		                        <div class="content-group">
+	                              	<div class="mt16">
+	                              		<field name="default_codition" class="o_light_label" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+	                                </div>
+	                            </div>
+                            </div>
+	                    </div>
+	                    <div class="col-xs-12 col-md-6 o_setting_box">
+	                        <div class="o_setting_right_pane">
+	                            <label for="default_delivery_code"/>
+	                            <div class="text-muted">
+	                                Default Delivery Code apply when product will prepare for export in bol.
+	                            </div>
+		                        <div class="content-group">
+	                              	<div class="mt16">
+	                              		<field name="default_delivery_code" class="o_light_label" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+	                                </div>
+	                            </div>
+                            </div>
+	                    </div>
+	                    <div class="col-xs-12 col-md-6 o_setting_box">
+	                            <div class="o_setting_left_pane">
+	                                <field name="is_publish"/>
+	                            </div>
+	                            <div class="o_setting_right_pane">
+	                                <label for="is_publish"/>
+	                            </div>
+	                    </div>
+	                 </div>
+	                <h2 attrs="{'invisible': [('bol_instance_id', '=', False)]}">Products Bulk Import Operation</h2>
+                    <div class="row mt16 o_settings_container" attrs="{'invisible': [('bol_instance_id', '=', False)]}">
+	                    <div class="col-xs-12 col-md-6 o_setting_box">
+	                            <div class="o_setting_left_pane">
+	                                <field name="sync_price_with_product"/>
+	                            </div>
+	                            <div class="o_setting_right_pane">
+	                                <label for="sync_price_with_product"/>
+	                                <div class="text-muted">
+	                                    Import price with product
+	                                </div>
+	                            </div>
+	                    </div>
+	                 </div>
+                    <h2 attrs="{'invisible': [('bol_instance_id', '=', False)]}">Payment Information</h2>
+                    <div class="row mt16 o_settings_container" attrs="{'invisible': [('bol_instance_id', '=', False)]}">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="bol_pricelist_id"/>
+                                <div class="text-muted">
+                                    Select Pricelist 
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="bol_pricelist_id" class="o_light_label" widget="selection" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="bol_payment_term_id"/>
+                                <div class="text-muted">
+                                   Select Payment Term 
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="bol_payment_term_id" class="o_light_label" widget="selection" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                    <h2 attrs="{'invisible': [('bol_instance_id', '=', False)]}">Order Information</h2>
+                    <div class="row mt16 o_settings_container" attrs="{'invisible': [('bol_instance_id', '=', False)]}">
+	                    <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="fbb_order_auto_import"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="fbb_order_auto_import"/>
+                                <div class="text-muted">
+                                    I want to import FBB order at every
+                                    <div attrs="{'invisible': [('fbb_order_auto_import', '=', False)]}">
+	                                    <field name="fbb_order_import_interval_number" attrs="{'required': [('fbb_order_auto_import', '=', True)]}" class="oe_inline"/>
+	                                    <field name="fbb_order_import_interval_type" attrs="{'required': [('fbb_order_auto_import', '=', True)]}" class="oe_inline"/>
+	                                    <field name="fbb_order_import_next_execution" attrs="{'required': [('fbb_order_auto_import', '=', True)]}" class="oe_inline"/>
+	                                    <field name="fbb_order_import_user_id" attrs="{'required': [('fbb_order_auto_import', '=', True)]}" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+	                    </div>
+	                    <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="fbr_order_auto_import"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="fbr_order_auto_import"/>
+                                <div class="text-muted">
+                                    I want to import FBR order at every
+                                    <div attrs="{'invisible': [('fbr_order_auto_import', '=', False)]}">
+	                                    <field name="fbr_order_import_interval_number" attrs="{'required': [('fbr_order_auto_import', '=', True)]}" class="oe_inline"/>
+	                                    <field name="fbr_order_import_interval_type" attrs="{'required': [('fbr_order_auto_import', '=', True)]}" class="oe_inline"/>
+	                                    <field name="fbr_order_import_next_execution" attrs="{'required': [('fbr_order_auto_import', '=', True)]}" class="oe_inline"/>
+	                                    <field name="fbr_order_import_user_id" attrs="{'required': [('fbr_order_auto_import', '=', True)]}" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+	                    </div>
+	                    <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="fbb_order_workflow"/>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="fbb_order_workflow" class="o_light_label" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="fbr_order_workflow"/>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="fbr_order_workflow" class="o_light_label" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="bol_order_auto_update"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="bol_order_auto_update"/>
+                                <div class="text-muted">
+                                    I want to update order status at every
+                                    <div attrs="{'invisible': [('bol_order_auto_update', '=', False)]}">
+	                                    <field name="bol_order_update_interval_number" attrs="{'required': [('bol_order_auto_update', '=', True)]}" class="oe_inline"/>
+	                                    <field name="bol_order_update_interval_type" attrs="{'required': [('bol_order_auto_update', '=', True)]}" class="oe_inline"/>
+	                                    <field name="bol_order_update_next_execution" attrs="{'required': [('bol_order_auto_update', '=', True)]}" class="oe_inline"/>
+	                                    <field name="bol_order_update_user_id" attrs="{'required': [('bol_order_auto_update', '=', True)]}" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+	                    </div>
+	                    <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane"/>
+                            <div class="o_setting_right_pane">
+                                <label for="bol_order_prefix"/>
+                                <div class="text-muted">
+                                   Enter Order Prefix
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="bol_order_prefix" class="o_light_label"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="bol_team_id"/>
+                                <div class="text-muted">
+                                    Select Sales Team 
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="bol_team_id" class="o_light_label" widget="selection"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="bol_global_channel_id"/>
+                                <div class="text-muted">
+                                    Select Sales Team
+                                </div>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="bol_global_channel_id" class="o_light_label"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box" attrs="{'invisible': [('bol_instance_id', '=', False)]}">
+                            <div class="o_setting_right_pane">
+                                <label for="import_shipment_order_type"/>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="import_shipment_order_type" class="o_light_label" widget="selection" attrs="{'required': [('bol_instance_id', '!=', False)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="auto_import_shipment"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="auto_import_shipment"/>
+                                <div class="text-muted">
+                                    I want to import Shipments at every
+                                    <div attrs="{'invisible': [('auto_import_shipment', '=', False)]}">
+	                                    <field name="import_shipment_interval_number" attrs="{'required': [('auto_import_shipment', '=', True)]}" class="oe_inline"/>
+	                                    <field name="import_shipment_interval_type" attrs="{'required': [('auto_import_shipment', '=', True)]}" class="oe_inline"/>
+	                                    <field name="import_shipment_next_execution" attrs="{'required': [('auto_import_shipment', '=', True)]}" class="oe_inline"/>
+	                                    <field name="import_shipment_user_id" attrs="{'required': [('auto_import_shipment', '=', True)]}" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+	                    </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="bol_manage_multi_tracking_number_in_delivery_order"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="bol_manage_multi_tracking_number_in_delivery_order"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="auto_create_product"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="auto_create_product"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="auto_retrive_shipment_status"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="auto_retrive_shipment_status"/>
+                                <div class="text-muted">
+                                    I want to retrive shipment status at every
+                                    <div attrs="{'invisible': [('auto_retrive_shipment_status', '=', False)]}">
+	                                    <field name="retrive_shipment_status_interval_number" attrs="{'required': [('auto_retrive_shipment_status', '=', True)]}" class="oe_inline"/>
+	                                    <field name="retrive_shipment_status_interval_type" attrs="{'required': [('auto_retrive_shipment_status', '=', True)]}" class="oe_inline"/>
+	                                    <field name="retrive_shipment_status_next_execution" attrs="{'required': [('auto_retrive_shipment_status', '=', True)]}" class="oe_inline"/>
+	                                    <field name="retrive_shipment_status_user_id" attrs="{'required': [('auto_retrive_shipment_status', '=', True)]}" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+	                    </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="update_order_status_when_picking_in_ready"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="update_order_status_when_picking_in_ready"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="allow_process_unshipped_bol_products"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="allow_process_unshipped_bol_products"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="is_auto_start_return"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="is_auto_start_return"/>
+                            </div>
+                        </div>
+                     </div>
+                    <h2 attrs="{'invisible': [('bol_instance_id', '=', False)]}">Stock Information</h2>
+                     <div class="row mt16 o_settings_container" attrs="{'invisible': [('bol_instance_id', '=', False)]}">
+                     	<div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_right_pane">
+                                <label for="bol_stock_field"/>
+                                <div class="content-group">
+                                    <div class="mt16">
+                                        <field name="bol_stock_field" class="o_light_label" widget="selection" domain="[('model_id.model','=','product.product'),('name','in',['qty_available','virtual_available'])]" attrs="{'required':[('bol_instance_id','!=',False)]}"/>
+                                    </div>
+                                </div>
+                            </div>
+                     	</div>
+                     	<div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="auto_update_stock"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="auto_update_stock"/>
+                                <div class="text-muted">
+                                    <p attrs="{'invisible': [('auto_update_stock', '=', False)]}" colspan="2" class="alert alert-warning"><b>Caution:</b> Update stock will update <b>Stock</b> and <b>Price</b> along with other Product Information from Odoo to Bol.com.</p>
+                                    <div attrs="{'invisible': [('auto_update_stock', '=', False)]}">
+	                                    <field name="update_stock_interval_number" attrs="{'required': [('auto_update_stock', '=', True)]}" class="oe_inline"/>
+	                                    <field name="update_stock_interval_type" attrs="{'required': [('auto_update_stock', '=', True)]}" class="oe_inline"/>
+	                                    <field name="update_stock_next_execution" attrs="{'required': [('auto_update_stock', '=', True)]}" class="oe_inline"/>
+	                                    <field name="update_stock_user_id" attrs="{'required': [('auto_update_stock', '=', True)]}" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+	                    </div>
+	                    <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="validate_bol_stock_inventory"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="validate_bol_stock_inventory"/>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                            <div class="o_setting_left_pane">
+                                <field name="auto_import_fbb_inventory"/>
+                            </div>
+                            <div class="o_setting_right_pane">
+                                <label for="auto_import_fbb_inventory"/>
+                                <div class="text-muted">
+                                	I want to import FBB inventory at every
+                                    <div attrs="{'invisible': [('auto_import_fbb_inventory', '=', False)]}">
+	                                    <field name="import_fbb_inventory_interval_number" attrs="{'required': [('auto_import_fbb_inventory', '=', True)]}" class="oe_inline"/>
+	                                    <field name="import_fbb_inventory_interval_type" attrs="{'required': [('auto_import_fbb_inventory', '=', True)]}" class="oe_inline"/>
+	                                    <field name="import_fbb_inventory_next_execution" attrs="{'required': [('auto_import_fbb_inventory', '=', True)]}" class="oe_inline"/>
+	                                    <field name="import_fbb_inventory_user_id" attrs="{'required': [('auto_import_fbb_inventory', '=', True)]}" class="oe_inline"/>
+                                    </div>
+                                </div>
+                            </div>
+	                    </div>
+	                 </div>
+                </div>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="action_bol_instance_config" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>            
+			<field name="context">{'default_bol_instance_id': active_id}</field> 
+            <field name="target">inline</field>
+        </record>
+
+        <record id="action_bol_config" model="ir.actions.act_window">
+            <field name="name">Bol</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+             <field name="context">{'module' : 'bol_ept'}</field>
+        </record> 
+        
+        <menuitem id="menu_bol_config" name="Settings" parent="bol_ept.menu_configuration_ept"
+            sequence="1" action="action_bol_config" groups="base.group_system"/>
+    </data>
+</odoo>

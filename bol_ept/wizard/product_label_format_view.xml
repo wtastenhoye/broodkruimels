@@ -1,0 +1,19 @@
+<odoo>
+<data>
+   <record id="view_bol_product_label_ept" model="ir.ui.view">
+            <field name="name">Product Label</field>
+            <field name="model">product.label.format.ept</field>
+            <field name="arch" type="xml">
+                <form>
+                	<group>
+                		<field name="label_format" required="1"></field>
+                	</group>
+                	<footer>
+                		<button name="get_product_lables" string="Get Product Labels" type="object" class="oe_highlight"/>
+                        <button string="Cancel" class="oe_highlight" special="cancel"/>
+                    </footer>
+               </form>
+            </field>
+    </record>
+  </data>
+</odoo>

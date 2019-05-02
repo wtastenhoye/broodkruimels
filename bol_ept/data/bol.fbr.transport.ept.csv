@@ -1,0 +1,26 @@
+id,code,name
+BRIEFPOST_ept,BRIEFPOST,Briefpost
+UPS_ept,UPS,UPS
+TNT_ept,TNT,PostNL
+TNT-EXTRA_ept,TNT-EXTRA,PostNL extra@home
+TNT_BRIEF_ept,TNT_BRIEF,PostNL Briefpost (Track & Trace required)
+TNT-EXPRESS_ept,TNT-EXPRESS,TNT Express
+DYL_ept,DYL,Dynalogic
+DPD-NL_ept,DPD-NL,DPD Nederland
+DPD-BE_ept,DPD-BE,DPD België
+BPOST_BE_ept,BPOST_BE,Bpost België
+BPOST_BRIEF_ept,BPOST_BRIEF,Bpost Briefpost (Track & Trace required)
+DHLFORYOU_ept,DHLFORYOU,DHLFORYOU
+GLS_ept,GLS,GLS
+FEDEX_NL_ept,FEDEX_NL,FedEx Nederland
+FEDEX_BE_ept,FEDEX_BE,FedEx Belgie
+OTHER_ept,OTHER,Anders
+DHL_ept,DHL,DHL
+DHL_DE_ept,DHL_DE,DHL Germany
+DHL-GLOBAL-MAIL_ept,DHL-GLOBAL-MAIL,DHL Global mail
+TSN_ept,TSN,Transportservice Nederland
+FIEGE_ept,FIEGE,Fiege
+TRANSMISSION_ept,TRANSMISSION,TransMission
+PARCEL-NL_ept,PARCEL-NL,Parcel.nl
+LOGOIX_ept,LOGOIX,LogoiX
+PACKS_ept,PACKS,Packs
